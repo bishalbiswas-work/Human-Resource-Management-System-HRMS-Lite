@@ -1,4 +1,30 @@
+import { useState, useEffect } from 'react';
+
+
 const Overview = () => {
+    const [stats, setStats] = useState({ employees: 0, attendance: 0 });
+
+    useEffect(() => {
+        // quick fetch for some stats
+        const fetchStats = async () => {
+            try {
+                const empRes = await fetch('http://localhost:8000/employees/');
+                const emps = await empRes.json();
+
+                const date = new Date().toISOString().split('T')[0];
+                const attRes = await fetch(`http://localhost:8000/attendance/?date=${date}`);
+                const atts = await attRes.json();
+
+                setStats({
+                    employees: emps.length,
+                    attendance: atts.length
+                });
+            } catch (err) {
+                console.error("Stats fetch error", err);
+            }
+        };
+        fetchStats();
+    }, []);
     return (
         <>
             <main className="flex-1 p-10 overflow-y-auto bg-slate-50/50">
@@ -11,11 +37,11 @@ const Overview = () => {
                     <div className="grid grid-cols-2 gap-6">
                         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
                             <p className="text-sm font-bold text-slate-400 uppercase mb-2">Total Employees</p>
-                            <p className="text-5xl font-black text-blue-600"></p>
+                            <p className="text-5xl font-black text-blue-600"> {stats.employees}</p>
                         </div>
                         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
                             <p className="text-sm font-bold text-slate-400 uppercase mb-2">Attendance Marked Today</p>
-                            <p className="text-5xl font-black text-green-600"></p>
+                            <p className="text-5xl font-black text-green-600">{stats.attendance}</p>
                         </div>
                     </div>
 
