@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from sqlalchemy import text
 from app.core.config import settings
-from app.db.database import engine
+from app.db.database import engine, get_db
 from app.models import models
+from app.routes import employee, attendance
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -16,6 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(employee.router)
+app.include_router(attendance.router)
+
 @app.get("/")
 async def read_root():
     return {
@@ -24,5 +30,10 @@ async def read_root():
     }
 
 @app.get("/health")
-async def health_check():
-    return {"status": "ok", "app": "HRMS Lite", "db": "PostgreSQL"}
+async def health_check(db: Session = Depends(get_db)):
+    try:
+        # Check database connection
+        db.execute(text("SELECT 1"))
+        return {"status": "ok", "app": "HRMS Lite", "db": "PostgreSQL (connected)"}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="Database connection failed")
