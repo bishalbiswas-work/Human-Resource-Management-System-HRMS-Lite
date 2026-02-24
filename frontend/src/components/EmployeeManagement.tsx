@@ -1,4 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
+import { API_BASE_URL } from '../config';
 
 interface Employee {
     employee_id: string;
@@ -27,7 +28,7 @@ const EmployeeManagement = () => {
     const fetchEmployees = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:8000/employees/');
+            const res = await fetch(`${API_BASE_URL}/employees/`);
             if (!res.ok) throw new Error('Failed to fetch data');
             const data = await res.json();
             setEmployees(data);
@@ -49,7 +50,7 @@ const EmployeeManagement = () => {
         };
 
         try {
-            const res = await fetch('http://localhost:8000/employees/', {
+            const res = await fetch(`${API_BASE_URL}/employees/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newEmp)
@@ -74,7 +75,7 @@ const EmployeeManagement = () => {
         if (!window.confirm('Are you sure you want to delete this employee?')) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/employees/${empId}`, {
+            const res = await fetch(`${API_BASE_URL}/employees/${empId}`, {
                 method: 'DELETE'
             });
 
@@ -101,8 +102,8 @@ const EmployeeManagement = () => {
                 <button
                     onClick={() => setIsAdding(!isAdding)}
                     className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${isAdding
-                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            : 'bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95'
+                        ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : 'bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95'
                         }`}
                 >
                     {isAdding ? 'Close Form' : 'Add New Employee'}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, CheckCircle, ArrowRight } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 const Overview = () => {
     const [stats, setStats] = useState({ employees: 0, attendance: 0 });
@@ -7,11 +8,11 @@ const Overview = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const empRes = await fetch('http://localhost:8000/employees/');
+                const empRes = await fetch(`${API_BASE_URL}/employees/`);
                 const emps = await empRes.json();
 
                 const date = new Date().toISOString().split('T')[0];
-                const attRes = await fetch(`http://localhost:8000/attendance/?date=${date}`);
+                const attRes = await fetch(`${API_BASE_URL}/attendance/?date=${date}`);
                 const atts = await attRes.json();
 
                 setStats({

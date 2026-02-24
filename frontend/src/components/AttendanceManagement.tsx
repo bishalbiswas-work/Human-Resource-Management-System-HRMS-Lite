@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 interface Employee {
     employee_id: string;
@@ -21,8 +22,8 @@ const AttendanceManagement = () => {
             setLoading(true);
             try {
                 const [empRes, attRes] = await Promise.all([
-                    fetch('http://localhost:8000/employees/'),
-                    fetch(`http://localhost:8000/attendance/?date=${selectedDate}`)
+                    fetch(`${API_BASE_URL}/employees/`),
+                    fetch(`${API_BASE_URL}/attendance/?date=${selectedDate}`)
                 ]);
 
                 const emps = await empRes.json();
@@ -41,7 +42,7 @@ const AttendanceManagement = () => {
 
     const markAttendance = async (empId: string, status: string) => {
         try {
-            const res = await fetch('http://localhost:8000/attendance/', {
+            const res = await fetch(`${API_BASE_URL}/attendance/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -112,8 +113,8 @@ const AttendanceManagement = () => {
                                     <td className="px-8 py-5 font-mono text-xs font-bold text-gray-400">{emp.employee_id}</td>
                                     <td className="px-8 py-5 text-center">
                                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${status === 'Present' ? 'bg-emerald-50 text-emerald-600' :
-                                                status === 'Absent' ? 'bg-rose-50 text-rose-600' :
-                                                    'bg-gray-50 text-gray-400'
+                                            status === 'Absent' ? 'bg-rose-50 text-rose-600' :
+                                                'bg-gray-50 text-gray-400'
                                             }`}>
                                             {status}
                                         </span>
@@ -123,8 +124,8 @@ const AttendanceManagement = () => {
                                             <button
                                                 onClick={() => markAttendance(emp.employee_id, 'Present')}
                                                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${status === 'Present'
-                                                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
-                                                        : 'bg-white border border-gray-100 text-gray-400 hover:text-emerald-600 hover:border-emerald-200 hover:shadow-sm'
+                                                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
+                                                    : 'bg-white border border-gray-100 text-gray-400 hover:text-emerald-600 hover:border-emerald-200 hover:shadow-sm'
                                                     }`}
                                             >
                                                 Present
@@ -132,8 +133,8 @@ const AttendanceManagement = () => {
                                             <button
                                                 onClick={() => markAttendance(emp.employee_id, 'Absent')}
                                                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${status === 'Absent'
-                                                        ? 'bg-rose-600 text-white shadow-lg shadow-rose-100'
-                                                        : 'bg-white border border-gray-100 text-gray-400 hover:text-rose-600 hover:border-rose-200 hover:shadow-sm'
+                                                    ? 'bg-rose-600 text-white shadow-lg shadow-rose-100'
+                                                    : 'bg-white border border-gray-100 text-gray-400 hover:text-rose-600 hover:border-rose-200 hover:shadow-sm'
                                                     }`}
                                             >
                                                 Absent
