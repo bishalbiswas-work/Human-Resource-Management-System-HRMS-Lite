@@ -73,81 +73,83 @@ const AttendanceManagement = () => {
     if (loading) return <div className="p-10 text-center text-gray-400">Loading attendance data...</div>;
 
     return (
-        <div>
-            <div className="p-8">
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">Attendance Management</h1>
-                        <p className="text-sm text-gray-500 mt-1">Mark daily attendance for all employees</p>
-                    </div>
-                    <div className="flex items-center gap-3 bg-gray-100 p-2 rounded-lg">
-                        <span className="text-sm font-bold text-gray-600">Date:</span>
-                        <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            className="p-1 border rounded text-sm font-medium"
-                        />
-                    </div>
+        <div className="max-w-6xl mx-auto pb-12">
+            <div className="flex justify-between items-end mb-10">
+                <div>
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Attendance Tracking</h1>
+                    <p className="text-gray-500 font-medium mt-1">Monitor daily presence and absence logs.</p>
                 </div>
+                <div className="flex items-center gap-4 bg-white border border-gray-100 p-2 pl-4 rounded-2xl shadow-sm">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Select Date</span>
+                    <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="p-2 px-3 border border-gray-100 rounded-xl text-sm font-bold bg-gray-50 outline-none focus:bg-white focus:border-blue-400 transition-all cursor-pointer"
+                    />
+                </div>
+            </div>
 
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b">
-                            <tr>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Employee</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ID</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Current Status</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employees.map(emp => {
-                                const status = getStatus(emp.employee_id);
-                                return (
-                                    <tr key={emp.employee_id} className="border-b last:border-0 hover:bg-gray-50">
-                                        <td className="px-6 py-4">
-                                            <div className="font-semibold text-gray-800">{emp.full_name}</div>
-                                            <div className="text-xs text-gray-500">{emp.department}</div>
-                                        </td>
-                                        <td className="px-6 py-4 font-mono text-xs text-gray-600">{emp.employee_id}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${status === 'Present' ? 'bg-green-100 text-green-700' :
-                                                status === 'Absent' ? 'bg-red-100 text-red-700' :
-                                                    'bg-gray-100 text-gray-500'
-                                                }`}>
-                                                {status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex justify-center gap-2">
-                                                <button
-                                                    onClick={() => markAttendance(emp.employee_id, 'Present')}
-                                                    className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${status === 'Present' ? 'bg-green-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                                        }`}
-                                                >
-                                                    Present
-                                                </button>
-                                                <button
-                                                    onClick={() => markAttendance(emp.employee_id, 'Absent')}
-                                                    className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${status === 'Absent' ? 'bg-red-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                                        }`}
-                                                >
-                                                    Absent
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                            {employees.length === 0 && (
-                                <tr>
-                                    <td colSpan={4} className="px-6 py-10 text-center text-gray-400 italic">No employees found. Go to Employee Management to add some!</td>
+            <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm">
+                <table className="w-full text-left">
+                    <thead className="bg-gray-50/50 border-b border-gray-100">
+                        <tr>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Employee Details</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">ID Number</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none text-center">Current Status</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                        {employees.map(emp => {
+                            const status = getStatus(emp.employee_id);
+                            return (
+                                <tr key={emp.employee_id} className="hover:bg-blue-50/30 transition-all group">
+                                    <td className="px-8 py-5">
+                                        <div className="font-bold text-gray-900">{emp.full_name}</div>
+                                        <div className="text-xs text-gray-400 font-semibold">{emp.department}</div>
+                                    </td>
+                                    <td className="px-8 py-5 font-mono text-xs font-bold text-gray-400">{emp.employee_id}</td>
+                                    <td className="px-8 py-5 text-center">
+                                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${status === 'Present' ? 'bg-emerald-50 text-emerald-600' :
+                                                status === 'Absent' ? 'bg-rose-50 text-rose-600' :
+                                                    'bg-gray-50 text-gray-400'
+                                            }`}>
+                                            {status}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-5 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => markAttendance(emp.employee_id, 'Present')}
+                                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${status === 'Present'
+                                                        ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
+                                                        : 'bg-white border border-gray-100 text-gray-400 hover:text-emerald-600 hover:border-emerald-200 hover:shadow-sm'
+                                                    }`}
+                                            >
+                                                Present
+                                            </button>
+                                            <button
+                                                onClick={() => markAttendance(emp.employee_id, 'Absent')}
+                                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${status === 'Absent'
+                                                        ? 'bg-rose-600 text-white shadow-lg shadow-rose-100'
+                                                        : 'bg-white border border-gray-100 text-gray-400 hover:text-rose-600 hover:border-rose-200 hover:shadow-sm'
+                                                    }`}
+                                            >
+                                                Absent
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                            );
+                        })}
+                        {employees.length === 0 && (
+                            <tr>
+                                <td colSpan={4} className="px-8 py-16 text-center text-gray-400 italic font-medium">No employees found in the directory.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
     )

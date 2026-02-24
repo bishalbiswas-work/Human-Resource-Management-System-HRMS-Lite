@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-
+import { Users, CheckCircle, ArrowRight } from 'lucide-react';
 
 const Overview = () => {
     const [stats, setStats] = useState({ employees: 0, attendance: 0 });
 
     useEffect(() => {
-        // quick fetch for some stats
         const fetchStats = async () => {
             try {
                 const empRes = await fetch('http://localhost:8000/employees/');
@@ -25,37 +24,53 @@ const Overview = () => {
         };
         fetchStats();
     }, []);
+
     return (
-        <>
-            <main className="flex-1 p-10 overflow-y-auto bg-slate-50/50">
-                <div className="max-w-4xl mx-auto space-y-8 animate-fade">
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">HRMS Dashboard</h1>
-                        <p className="text-slate-500 font-medium">Quick overview of your organization status today.</p>
-                    </div>
+        <div className="max-w-5xl mx-auto space-y-10 animate-fade pb-12">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-black text-gray-900 tracking-tight">Overview Dashboard</h1>
+                <p className="text-gray-500 font-medium">Monthly performance and today's activity snapshot.</p>
+            </div>
 
-                    <div className="grid grid-cols-2 gap-6">
-                        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                            <p className="text-sm font-bold text-slate-400 uppercase mb-2">Total Employees</p>
-                            <p className="text-5xl font-black text-blue-600"> {stats.employees}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-50/50 transition-all group">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="p-3 bg-blue-50 rounded-2xl text-blue-600 group-hover:scale-110 transition-transform">
+                            <Users className="w-8 h-8" />
                         </div>
-                        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                            <p className="text-sm font-bold text-slate-400 uppercase mb-2">Attendance Marked Today</p>
-                            <p className="text-5xl font-black text-green-600">{stats.attendance}</p>
-                        </div>
+                        <ArrowRight className="text-gray-200 group-hover:text-blue-200 transition-colors" />
                     </div>
-
-                    <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
-                        <h3 className="text-xl font-bold text-slate-900 mb-4">Quick Shortcuts</h3>
-                        <div className="grid grid-cols-1 gap-4 text-sm font-medium">
-                            <div className="p-4 bg-blue-50 text-blue-700 rounded-xl border border-blue-100 italic">
-                                Tip: Don't forget to mark attendance for new employees!
-                            </div>
-                        </div>
-                    </div>
+                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Total Employees</p>
+                    <p className="text-6xl font-black text-gray-900 tracking-tighter">{stats.employees}</p>
                 </div>
-            </main>
-        </>
+
+                <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-green-50/50 transition-all group">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="p-3 bg-green-50 rounded-2xl text-green-600 group-hover:scale-110 transition-transform">
+                            <CheckCircle className="w-8 h-8" />
+                        </div>
+                        <ArrowRight className="text-gray-200 group-hover:text-green-200 transition-colors" />
+                    </div>
+                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Marked Today</p>
+                    <p className="text-6xl font-black text-gray-900 tracking-tighter">{stats.attendance}</p>
+                </div>
+            </div>
+
+            <div className="bg-gray-900 rounded-[2rem] p-10 shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full -translate-y-32 translate-x-32 blur-3xl"></div>
+                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-2 tracking-tight">System Notification</h3>
+                        <p className="text-gray-400 font-medium leading-relaxed max-w-md">
+                            Don't forget to review the attendance records for the new onboarding session today.
+                        </p>
+                    </div>
+                    <button className="bg-white text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all shadow-lg active:scale-95">
+                        Dismiss Message
+                    </button>
+                </div>
+            </div>
+        </div>
     )
 }
 

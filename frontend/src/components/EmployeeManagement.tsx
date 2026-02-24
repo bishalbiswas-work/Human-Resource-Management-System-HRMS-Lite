@@ -92,62 +92,82 @@ const EmployeeManagement = () => {
     if (error) return <div className="p-10 text-center text-red-400">Error: {error}</div>;
 
     return (
-        <div>
-            <div className="p-8">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-2xl font-bold text-gray-800">Employee Management</h1>
-                    <button
-                        onClick={() => setIsAdding(!isAdding)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700"
-                    >
-                        {isAdding ? 'Close Form' : 'Add Employee'}
-                    </button>
+        <div className="max-w-6xl mx-auto pb-12">
+            <div className="flex justify-between items-center mb-10">
+                <div>
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Employee Directory</h1>
+                    <p className="text-gray-500 font-medium mt-1">Manage and monitor all personnel details.</p>
                 </div>
+                <button
+                    onClick={() => setIsAdding(!isAdding)}
+                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${isAdding
+                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            : 'bg-blue-600 text-white shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-95'
+                        }`}
+                >
+                    {isAdding ? 'Close Form' : 'Add New Employee'}
+                </button>
+            </div>
 
-                {isAdding && (
-                    <form onSubmit={handleAdd} className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-8 space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <input value={id} onChange={(e) => setId(e.target.value)} placeholder="Employee ID (e.g. EMP001)" className="p-2 border rounded" required />
-                            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" className="p-2 border rounded" required />
-                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email Address" className="p-2 border rounded" required />
-                            <input value={dept} onChange={(e) => setDept(e.target.value)} placeholder="Department" className="p-2 border rounded" required />
+            {isAdding && (
+                <form onSubmit={handleAdd} className="bg-white p-8 rounded-[2rem] border border-gray-100 mb-10 shadow-xl shadow-gray-100/50 space-y-6 animate-in slide-in-from-top-4 duration-300">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-400 uppercase ml-1">Employee ID</label>
+                            <input value={id} onChange={(e) => setId(e.target.value)} placeholder="e.g. EMP001" className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-blue-400 outline-none transition-all" required />
                         </div>
-                        <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700">Save Employee</button>
-                    </form>
-                )}
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-400 uppercase ml-1">Full Name</label>
+                            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="First and Last name" className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-blue-400 outline-none transition-all" required />
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-400 uppercase ml-1">Email Address</label>
+                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="email@company.com" className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-blue-400 outline-none transition-all" required />
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-400 uppercase ml-1">Department</label>
+                            <input value={dept} onChange={(e) => setDept(e.target.value)} placeholder="e.g. Engineering" className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:bg-white focus:border-blue-400 outline-none transition-all" required />
+                        </div>
+                    </div>
+                    <button type="submit" className="w-full md:w-auto px-10 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg shadow-green-100 hover:bg-green-700 transition-all active:scale-95">
+                        Register Employee
+                    </button>
+                </form>
+            )}
 
-                <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b">
+            <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm">
+                <table className="w-full text-left">
+                    <thead className="bg-gray-50/50 border-b border-gray-100">
+                        <tr>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">ID Number</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Full Name</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Contact</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Department</th>
+                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                        {employees.length === 0 ? (
                             <tr>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ID</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Name</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Email</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Department</th>
-                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                <td colSpan={5} className="px-8 py-16 text-center text-gray-400 italic font-medium">No records found. Get started by adding your first employee.</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {employees.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="px-6 py-10 text-center text-gray-400 italic">No employees found. Add one to get started!</td>
+                        ) : (
+                            employees.map(emp => (
+                                <tr key={emp.employee_id} className="hover:bg-blue-50/30 transition-all group">
+                                    <td className="px-8 py-5 font-mono text-xs font-bold text-gray-400">{emp.employee_id}</td>
+                                    <td className="px-8 py-5 font-bold text-gray-900">{emp.full_name}</td>
+                                    <td className="px-8 py-5 text-gray-500 font-medium">{emp.email}</td>
+                                    <td className="px-8 py-5">
+                                        <span className="px-3 py-1 bg-gray-100 rounded-lg text-xs font-bold text-gray-600 group-hover:bg-white transition-colors">{emp.department}</span>
+                                    </td>
+                                    <td className="px-8 py-5 text-right">
+                                        <button onClick={() => handleDelete(emp.employee_id)} className="text-red-400 hover:text-red-600 text-xs font-black uppercase tracking-wider transition-colors">Delete</button>
+                                    </td>
                                 </tr>
-                            ) : (
-                                employees.map(emp => (
-                                    <tr key={emp.employee_id} className="border-b last:border-0 hover:bg-gray-50 transition-all">
-                                        <td className="px-6 py-4 font-mono text-xs">{emp.employee_id}</td>
-                                        <td className="px-6 py-4 font-semibold">{emp.full_name}</td>
-                                        <td className="px-6 py-4 text-gray-600">{emp.email}</td>
-                                        <td className="px-6 py-4 text-gray-600">{emp.department}</td>
-                                        <td className="px-6 py-4">
-                                            <button onClick={() => handleDelete(emp.employee_id)} className="text-red-500 hover:text-red-700 text-sm font-bold">Delete</button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                            ))
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
     )
