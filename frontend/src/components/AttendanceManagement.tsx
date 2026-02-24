@@ -5,7 +5,7 @@ interface Employee {
     full_name: string;
     department: string;
 }
-interface Attendance {
+interface AttendanceRecord {
     employee_id: string;
     date: string;
     status: string;
