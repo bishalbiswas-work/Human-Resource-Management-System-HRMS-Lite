@@ -1,4 +1,4 @@
-# HRMS Lite - My Portfolio Project
+# HRMS Lite 
 
 this is a simple Human Resource Managment System (HRMS) i built to practice fully stack development. it basically helps handling employees and there attendance. i tried to make the UI look clean but its still a work in progress.
 
