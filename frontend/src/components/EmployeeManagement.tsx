@@ -110,6 +110,7 @@ const EmployeeManagement = () => {
                                         <td className="px-6 py-4 text-gray-600">{emp.email}</td>
                                         <td className="px-6 py-4 text-gray-600">{emp.department}</td>
                                         <td className="px-6 py-4">
+                                            <button onClick={() => handleDelete(emp.employee_id)} className="text-red-500 hover:text-red-700 text-sm font-bold">Delete</button>
                                         </td>
                                     </tr>
                                 ))
