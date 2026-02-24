@@ -11,34 +11,67 @@ interface Attendance {
     status: string;
 }
 const AttendanceManagement = () => {
-    const [employees] = useState<Employee[]>([
-        { employee_id: "EMP001", full_name: "Rahul Sharma", department: "Engineering" },
-        { employee_id: "EMP002", full_name: "Ananya Verma", department: "HR" },
-        { employee_id: "EMP003", full_name: "Amit Gupta", department: "Finance" },
-        { employee_id: "EMP004", full_name: "Priya Singh", department: "Marketing" },
-    ]);
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [loading, setLoading] = useState(true);
 
-    const [selectedDate, setSelectedDate] = useState(
-        new Date().toISOString().split("T")[0]
-    );
+    useEffect(() => {
+        const loadInitialData = async () => {
+            setLoading(true);
+            try {
+                const [empRes, attRes] = await Promise.all([
+                    fetch('http://localhost:8000/employees/'),
+                    fetch(`http://localhost:8000/attendance/?date=${selectedDate}`)
+                ]);
 
-    const [attendance, setAttendance] = useState<{
-        [date: string]: { [empId: string]: Status };
-    }>({});
+                const emps = await empRes.json();
+                const atts = await attRes.json();
 
-    const getStatus = (empId: string): Status => {
-        return attendance[selectedDate]?.[empId] || "Not Marked";
+                setEmployees(emps);
+                setAttendanceRecords(atts);
+            } catch (err) {
+                console.error("Error loading attendance data", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadInitialData();
+    }, [selectedDate]);
+
+    const markAttendance = async (empId: string, status: string) => {
+        try {
+            const res = await fetch('http://localhost:8000/attendance/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    employee_id: empId,
+                    date: selectedDate,
+                    status: status
+                })
+            });
+
+            if (res.ok) {
+                const updated = await res.json();
+                setAttendanceRecords(prev => {
+                    const filtered = prev.filter(r => r.employee_id !== empId);
+                    return [...filtered, updated];
+                });
+            } else {
+                alert('Failed to mark attendance');
+            }
+        } catch (err) {
+            alert('Error connecting to server');
+        }
     };
 
-    const markAttendance = (empId: string, status: Status) => {
-        setAttendance((prev) => ({
-            ...prev,
-            [selectedDate]: {
-                ...prev[selectedDate],
-                [empId]: status,
-            },
-        }));
+    const getStatus = (empId: string) => {
+        const record = attendanceRecords.find(r => r.employee_id === empId);
+        return record ? record.status : 'Not Marked';
     };
+
+    if (loading) return <div className="p-10 text-center text-gray-400">Loading attendance data...</div>;
+
     return (
         <div>
             <div className="p-8">
