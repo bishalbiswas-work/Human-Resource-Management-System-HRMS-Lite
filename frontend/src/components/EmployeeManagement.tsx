@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, FormEvent } from 'react';
 
 interface Employee {
     employee_id: string;
@@ -8,59 +8,89 @@ interface Employee {
 }
 
 const EmployeeManagement = () => {
-    const [employees, setEmployees] = useState<Employee[]>([
-        {
-            employee_id: "EMP001",
-            full_name: "Rahul Sharma",
-            email: "rahul.sharma@company.com",
-            department: "Engineering",
-        },
-        {
-            employee_id: "EMP002",
-            full_name: "Ananya Verma",
-            email: "ananya.verma@company.com",
-            department: "HR",
-        },
-        {
-            employee_id: "EMP003",
-            full_name: "Amit Gupta",
-            email: "amit.gupta@company.com",
-            department: "Finance",
-        },
-        {
-            employee_id: "EMP004",
-            full_name: "Priya Singh",
-            email: "priya.singh@company.com",
-            department: "Marketing",
-        },
-    ]);
-    const [id, setId] = useState("");
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [dept, setDept] = useState("");
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // form state
+    const [id, setId] = useState('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [dept, setDept] = useState('');
     const [isAdding, setIsAdding] = useState(false);
 
-    // Dummy handlers (so component works without backend)
-    const handleAdd = (e: FormEvent) => {
+    // fetch employees on mount
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
+
+    const fetchEmployees = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('http://localhost:8000/employees/');
+            if (!res.ok) throw new Error('Failed to fetch data');
+            const data = await res.json();
+            setEmployees(data);
+            setError(null);
+        } catch (err: any) {
+            setError(err.message || 'An unknown error occurred');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAdd = async (e: FormEvent) => {
         e.preventDefault();
-        const newEmployee: Employee = {
+        const newEmp = {
             employee_id: id,
             full_name: name,
             email: email,
-            department: dept,
+            department: dept
         };
 
-        setEmployees((prev) => [...prev, newEmployee]);
-        setId("");
-        setName("");
-        setEmail("");
-        setDept("");
-        setIsAdding(false);
+        try {
+            const res = await fetch('http://localhost:8000/employees/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newEmp)
+            });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                alert(errData.detail || 'Error adding employee');
+                return;
+            }
+
+            // reset form and refresh list
+            setId(''); setName(''); setEmail(''); setDept('');
+            setIsAdding(false);
+            fetchEmployees();
+        } catch (err) {
+            alert('Something went wrong!');
+        }
     };
 
-    const handleDelete = (empId: string) => {
-        setEmployees((prev) => prev.filter((emp) => emp.employee_id !== empId));
+    const handleDelete = async (empId: string) => {
+        if (!window.confirm('Are you sure you want to delete this employee?')) return;
+
+        try {
+            const res = await fetch(`http://localhost:8000/employees/${empId}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                fetchEmployees();
+            } else {
+                alert('Delete failed');
+            }
+        } catch (err) {
+            alert('Error deleting');
+        }
     };
+
+    if (loading) return <div className="p-10 text-center text-gray-400">Loading employees...</div>;
+    if (error) return <div className="p-10 text-center text-red-400">Error: {error}</div>;
+
     return (
         <div>
             <div className="p-8">
